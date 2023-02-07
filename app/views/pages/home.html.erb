@@ -1,2 +1,8 @@
-<h1>Pages#home</h1>
-<p>Find me in app/views/pages/home.html.erb</p>
+<h2 class="fw-bolder">Create a question</h2>
+<%= simple_form_for @question do |f| %>
+  <%= f.input :title, label: "Your question", placeholder: "eg. What is your favourite pizza?" %>
+  <%= f.input :answers_text, label: "Add possible answers", placeholder: "tip: Hit enter for each answer you want to add" %>
+  <%= f.button :submit, class: "btn btn-primary btn-lg" %>
+<% end %>
+<br>
+<h2 class="fw-bolder">Vote</h2>
