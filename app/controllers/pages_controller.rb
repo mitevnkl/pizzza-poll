@@ -1,7 +1,7 @@
 class PagesController < ApplicationController
   def home
     @question = Question.new
-    @questions = Question.all.order(created_at: :desc)
+    @questions = Question.eager_load(:votes).order(created_at: :desc)
     @vote = Vote.new
   end
 
