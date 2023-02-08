@@ -27,7 +27,7 @@ class PagesController < ApplicationController
         redirect_to root_path, notice: 'Vote was successfully created.'
       else
         redirect_to root_path
-        flash[:alert] = "Vote was not created!"
+        flash[:alert] = "You must select an answer!"
       end
     end
   end
