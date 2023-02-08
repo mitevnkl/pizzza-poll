@@ -8,19 +8,27 @@ class PagesController < ApplicationController
   def create_question
     @question = Question.new(question_params)
     if @question.save
-      redirect_to root_path, notice: 'Question was successfully created.'
+      redirect_to root_path
+      flash[:notice] = "Question was recorded successfully!"
     else
-      render 'home', notice: 'Question was not created.'
+      redirect_to root_path
+      flash[:alert] = @question.errors.full_messages.join(', ')
     end
   end
 
   def create_vote
     @question = Question.find(params[:vote][:question_id])
     @vote = Vote.new(vote_params)
-    if @vote.save
-      redirect_to root_path, notice: "Your vote was successfully recorded."
+    if @question.voted_by_ip?(request.remote_ip)
+      redirect_to root_path
+      flash[:alert] = "You already voted for this question!"
     else
-      render :new
+      if @vote.save
+        redirect_to root_path, notice: 'Vote was successfully created.'
+      else
+        redirect_to root_path
+        flash[:alert] = "Vote was not created!"
+      end
     end
   end
 

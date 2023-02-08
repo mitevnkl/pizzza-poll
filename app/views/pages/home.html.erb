@@ -1,12 +1,28 @@
 <div class="container py-4">
+  <%# Flashes %>
+  <% if flash[:notice].present? %>
+    <div class="alert alert-success" role="alert">
+      <%= flash[:notice] %>
+    </div>
+  <% elsif flash[:alert].present? %>
+    <div class="alert alert-danger" role="alert">
+      <%= flash[:alert] %>
+    </div>
+  <% end %>
   <%# Add question %>
   <div class="row">
-    <div class="col-lg-6">
+    <div class="col-lg-6 position-static">
       <h4 class="p-3 bg-white fw-bolder">Create a question</h4>
       <div class="bg-light p-4 mb-3">
-        <%= simple_form_for @question do |f| %>
-          <%= f.input :title, label: "Your question", placeholder: "eg. What is your favourite pizza?" %>
-          <%= f.input :answers_text, label: "Add possible answers", input_html: {style:"height: 10rem;"}, placeholder: "tip: Hit enter for each answer you want to add" %>
+        <%= simple_form_for @question, url: create_question_path do |f| %>
+          <%= f.input :title,
+            label: "Your question",
+            placeholder: "eg. What is your favourite pizza?" %>
+          <%= f.input :answers_text,
+            label: "Add possible answers",
+            hint: "Hit enter for each answer you want to add",
+            input_html: {style:"height: 10rem;", value: "• "},
+            placeholder: "tip: Hit enter for each answer you want to add" %>
           <%= f.button :submit, class: "btn btn-primary" %>
         <% end %>
       </div>
@@ -14,26 +30,34 @@
     <%# Vote %>
     <div class="col-lg-6">
       <h4 class="p-3 bg-white fw-bolder">Most recent questions</h4>
-      <% if @questions.length == 0 %>
-        <div class="bg-light p-4 mb-4">
-          <p class="mb-1 fw-bolder fs-5">😔 No questions yet</p>
-          <p class="mb-1">Be the first to create a question</p>
-        </div>
-      <% else %>
+      <% if @questions.present? %>
         <% @questions.each do |question| %>
           <div class="bg-light p-4 mb-4">
             <%= simple_form_for @vote, url: create_vote_path do |f| %>
               <%= f.hidden_field :question_id, value: question.id %>
-              <p class=""><%= question.title %></p>
+              <div class="d-flex align-items-center justify-content-between">
+                <p><%= question.title %></p>
+                <% if question.voted_by_ip?(request.remote_ip) %>
+                  <p class="text-muted">✓ You voted for this question</p>
+                <% end %>
+              </div>
               <% question.answers_text.split(/\n/).each do |answer| %>
-                <p class="mb-3 w-100 bg-white p-3"><%= f.radio_button :answer, answer %>
-                <%= answer %></p>
+                <div class="mb-3 w-100 bg-white p-3">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <p class="m-0"><%= f.radio_button :answer, answer %>
+                    <%= answer.sub(/\A• /, '') %></p>
+                    <p class="m-0 text-nowrap"><%= question.count_votes_for(answer) %> votes</p>
+                  </div>
+                </div>
               <% end %>
               <%= f.hidden_field :voter_ip, value: request.remote_ip %>
-              <p class="m-0"><%= f.button :submit, "Vote", class:"btn mt-2 btn-outline-primary" %></p>
+              <p class="m-0"><%= f.button :submit, "Vote",
+                class:"btn mt-2 btn-outline-primary" %></p>
             <% end %>
           </div>
         <% end %>
+      <% else %>
+        <p class="bg-light p-4">No questions yet. Be the first to create one!</p>
       <% end %>
     </div>
   </div>
