@@ -42,19 +42,21 @@
                 <% end %>
               </div>
               <% question.answers_text.split(/\n/).each do |answer| %>
-                <div class="mb-3 w-100 bg-white p-3">
-                  <div class="d-flex justify-content-between align-items-center">
-                    <p class="m-0">
-                      <%= f.radio_button :answer,
-                        answer,
-                        disabled: (question.my_answer(request.remote_ip, answer)) %>
-                      <%= answer.sub(/\A• /, '') %>
-                    </p>
-                    <p class="m-0 text-nowrap">
-                      <%= question.count_votes_for(answer) %>
-                    </p>
+                <% if answer != "• " %>
+                  <div class="mb-3 w-100 bg-white p-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <p class="m-0">
+                        <%= f.radio_button :answer,
+                          answer,
+                          disabled: (question.my_answer(request.remote_ip, answer)) %>
+                          <%= answer.sub(/\A• /, '') %>
+                      </p>
+                      <p class="m-0 text-nowrap">
+                        <%= question.count_votes_for(answer) %>
+                      </p>
+                    </div>
                   </div>
-                </div>
+                <% end %>
               <% end %>
               <%= f.hidden_field :voter_ip, value: request.remote_ip %>
               <p class="m-0"><%= f.button :submit, "Vote",

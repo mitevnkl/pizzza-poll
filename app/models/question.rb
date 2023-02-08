@@ -1,7 +1,6 @@
 class Question < ApplicationRecord
   has_many :votes, dependent: :destroy
   before_validation :strip_answers_text
-  validate :no_blank_answers
   validates :title, presence: true
   validates :answers_text, presence: true
   validates :title, format: { with: /\bpizza\b/i, message: "must include the word 'pizza'" }
@@ -26,12 +25,6 @@ class Question < ApplicationRecord
   def count_votes_for(answer)
     num_of_votes = votes.where(answer: answer).count
     num_of_votes == 1 ? "1 vote" : "#{num_of_votes} votes"
-  end
-
-  def no_blank_answers
-    if self.answers_text.last(3) == "\n• "
-      errors.add(:answers_text, "cannot have a blank answer")
-    end
   end
 
 end
