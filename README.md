@@ -1,24 +1,11 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Built using
 
-Things you may want to cover:
+* Ruby 3.1.2
 
-* Ruby version
+* Rails 7
 
-* System dependencies
+* Bootstrap 5
 
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+* Simple form 
